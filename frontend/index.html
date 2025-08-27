@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Studio for HSAD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="aurora-bg"></div>
+    <div class="container">
+        <header class="main-header">
+            <h1 class="main-title">
+                <img src="https://storage.googleapis.com/duleetest-hsad-demo-assets/google_logo.png" alt="Google Logo" class="google-logo">
+                Generative AI Studio
+            </h1>
+        </header>
+        <div class="glass-card">
+            <nav class="tabs">
+                <button class="tab-link active" data-tab="image-edit-tab"><i class="material-icons">edit</i>Image Editor (Imagen 3)</button>
+                <button class="tab-link" data-tab="image-edit-nano-tab"><i class="material-icons">edit</i>Image Editor (Nano-banana)</button>
+                <button class="tab-link" data-tab="image-gen-tab"><i class="material-icons">palette</i>Image Generator</button>
+                <button class="tab-link" data-tab="video-gen-tab"><i class="material-icons">movie</i>Video Generator</button>
+                <button class="tab-link" data-tab="music-gen-tab"><i class="material-icons">music_note</i>Music Generator</button>
+                <button class="tab-link" data-tab="voice-gen-tab"><i class="material-icons">mic</i>Voice Generator</button>
+                <button class="tab-link" data-tab="campaign-sim-tab"><i class="material-icons">campaign</i>Ad Simulator</button>
+                <button class="tab-link" data-tab="finetune-sim-tab"><i class="material-icons">tune</i>Fine-Tuning Sim</button>
+                <button class="tab-link" data-tab="why-gcp-tab"><i class="material-icons">cloud_queue</i>Why Google Cloud?</button>
+                <a href="https://storage.googleapis.com/hsad-dam-webapp-v1/index.html" target="_blank" id="dam-tab" class="tab-link"><i class="material-icons">inventory_2</i>Intelligent Digital Asset Management</a>
+            </nav>
+
+            <main>
+                <div id="image-edit-tab" class="tab-content active">
+                    <div class="tech-overview"><p><strong>Core Technologies:</strong> <strong>Vertex AI Imagen 3</strong>, a powerful diffusion model, performs sophisticated edits like inpainting and outpainting. It's guided by <strong>Vertex AI Gemini</strong>, which interprets user requests into actionable, creative plans for Imagen. This combination allows for intuitive, context-aware image manipulation far beyond simple filters.</p></div>
+                    <form id="edit-form" class="main-form">
+                        <div class="form-grid">
+                            <div class="form-column form-left">
+                                <label for="image-edit-upload" class="drop-zone">
+                                    <div class="drop-zone-content"><i class="material-icons">add_photo_alternate</i><span>Upload Image</span></div>
+                                    <div id="image-edit-preview-container" class="preview-container hidden"><img id="image-edit-preview" src="#"></div>
+                                    <input type="file" id="image-edit-upload" name="image" accept="image/*" required>
+                                </label>
+                            </div>
+                            <div class="form-column form-right">
+                                <div class="prompt-wrapper">
+                                    <textarea id="image-edit-prompt" name="prompt" placeholder="Describe your desired edit..."></textarea>
+                                    <button type="button" class="btn-enhance" data-target="image-edit-prompt" title="Enhance Prompt"><i class="material-icons">auto_awesome</i></button>
+                                </div>
+                                <div class="button-group">
+                                    <button type="submit" class="btn btn-edit"><i class="material-icons">auto_fix_high</i>Edit Image</button>
+                                    <button type="button" id="upscale-btn-standalone" class="btn btn-upscale"><i class="material-icons">zoom_in</i>Upscale 4x</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="image-edit-loading" class="loading-container hidden"><div class="loader"></div></div>
+                    <div id="image-edit-results" class="results-container hidden">
+                        <div class="image-gallery-fixed">
+                            <div class="image-container"><h3>Original</h3><img id="original-image" src=""></div>
+                            <div class="image-container"><h3>Edited</h3><img id="edited-image" src=""></div>
+                        </div>
+                    </div>
+                    <div id="upscale-results" class="results-container hidden">
+                        <div class="image-container upscale-container">
+                            <h3>Upscaled (4x)</h3>
+                            <img id="upscaled-image" src="">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="image-edit-nano-tab" class="tab-content">
+                    <div class="tech-overview"><p><strong>Core Technology:</strong> <strong>Gemini 2.5 Flash with Nano-banana</strong> provides rapid, creative image editing, supporting up to 3 images as simultaneous input. This lightweight yet powerful model is optimized for quick turnarounds, making it ideal for iterative design, conceptual exploration, and merging concepts from multiple images.</p></div>
+                    <form id="edit-form-nano" class="main-form">
+                        <div class="form-column-full">
+                            <div id="multi-image-uploader">
+                                <div id="nano-preview-gallery"></div>
+                                <label for="image-edit-upload-nano" class="btn btn-finetune-upload">
+                                    <i class="material-icons">add_photo_alternate</i>
+                                    <span>Add Images (up to 3)</span>
+                                </label>
+                                <input type="file" id="image-edit-upload-nano" name="images" accept="image/*" multiple>
+                            </div>
+                            <div class="prompt-wrapper">
+                                <textarea id="image-edit-prompt-nano" name="prompt" placeholder="Describe your desired edit... e.g., 'Merge these people into one photo.'"></textarea>
+                                <button type="button" class="btn-enhance" data-target="image-edit-prompt-nano" title="Enhance Prompt"><i class="material-icons">auto_awesome</i></button>
+                            </div>
+                            <div class="button-group">
+                                <button type="submit" class="btn btn-edit"><i class="material-icons">auto_fix_high</i>Edit Image</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="image-edit-loading-nano" class="loading-container hidden"><div class="loader"></div></div>
+                    <div id="image-edit-results-nano" class="results-container hidden">
+                        <div class="image-gallery-fixed">
+                            <div class="image-container"><h3>Edited</h3><img id="edited-image-nano" src=""></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="image-gen-tab" class="tab-content">
+                    <div class="tech-overview"><p><strong>Core Technology:</strong> <strong>Vertex AI Imagen 4</strong> is Google's flagship image generation model, renowned for its photorealism and deep language understanding. It excels at creating high-quality, detailed images from complex text prompts. This model is ideal for producing final ad creatives, concept art, and diverse marketing visuals.</p></div>
+                    <form id="image-gen-form" class="main-form full-width">
+                        <div class="prompt-wrapper">
+                            <textarea id="image-gen-prompt" name="prompt" placeholder="Describe the image you want to create..."></textarea>
+                            <button type="button" class="btn-enhance" data-target="image-gen-prompt" title="Enhance Prompt"><i class="material-icons">auto_awesome</i></button>
+                        </div>
+                        <button type="submit" class="btn btn-generate"><i class="material-icons">draw</i>Generate Image</button>
+                    </form>
+                    <div id="image-gen-loading" class="loading-container hidden"><div class="loader"></div></div>
+                    <div id="image-gen-results" class="results-container hidden"><div class="image-container"><img id="generated-image" src=""></div></div>
+                </div>
+
+                <div id="video-gen-tab" class="tab-content">
+                     <div class="tech-overview"><p><strong>Core Technology:</strong> <strong>Vertex AI Veo</strong> is Google's most advanced video generation model, capable of creating high-definition, cinematic-quality video clips from text and image prompts. It understands concepts like camera motion and visual effects, making it a powerful tool for storyboarding and creating dynamic ad content. Veo brings creative visions to life in motion.</p></div>
+                    <form id="video-gen-form" class="main-form">
+                        <div class="form-column form-left"><label for="video-gen-upload" class="drop-zone"><div class="drop-zone-content"><i class="material-icons">movie_creation</i><span>Upload Starting Image</span></div><div id="video-gen-preview-container" class="preview-container hidden"><img id="video-gen-preview" src="#"></div><input type="file" id="video-gen-upload" name="image" accept="image/*" required></label></div>
+                        <div class="form-column form-right">
+                            <div class="prompt-wrapper">
+                                <textarea id="video-gen-prompt" name="prompt" placeholder="Describe the video scene..."></textarea>
+                                <button type="button" class="btn-enhance" data-target="video-gen-prompt" title="Enhance Prompt"><i class="material-icons">auto_awesome</i></button>
+                            </div>
+                            <button type="submit" class="btn btn-video"><i class="material-icons">smart_display</i>Generate Video</button>
+                        </div>
+                    </form>
+                    <div id="video-gen-loading" class="loading-container hidden"><div class="loader"></div></div>
+                    <div id="video-gen-results" class="results-container hidden"><video id="generated-video" controls></video></div>
+                </div>
+
+                <div id="music-gen-tab" class="tab-content">
+                    <div class="tech-overview"><p><strong>Core Technology:</strong> <strong>Lyria</strong>, from Google's <strong>DeepMind</strong>, is a sophisticated music generation model. It can produce high-quality, instrumental audio in a wide variety of styles and moods based on simple text descriptions. Lyria is perfect for creating custom background scores and jingles for advertisements, ensuring a unique and fitting audio backdrop.</p></div>
+                    <form id="music-gen-form" class="main-form full-width">
+                        <div class="prompt-wrapper">
+                            <textarea id="music-gen-prompt" name="prompt" placeholder="Describe the music you want to create..."></textarea>
+                            <button type="button" class="btn-enhance" data-target="music-gen-prompt" title="Enhance Prompt"><i class="material-icons">auto_awesome</i></button>
+                        </div>
+                        <button type="submit" class="btn btn-music"><i class="material-icons">audio_file</i>Generate Music</button>
+                    </form>
+                    <div id="music-gen-loading" class="loading-container hidden"><div class="loader"></div></div>
+                    <div id="music-gen-results" class="results-container hidden"><audio id="generated-music" controls></audio></div>
+                </div>
+
+                <div id="voice-gen-tab" class="tab-content">
+                    <div class="tech-overview"><p><strong>Core Technology:</strong> Google's <strong>Text-to-Speech (TTS)</strong>, powered by <strong>WaveNet</strong> and <strong>Chirp</strong> models, delivers incredibly natural-sounding voices. It supports a vast range of languages and voice profiles, making it ideal for creating professional voiceovers for ads, presentations, and instructional videos. The technology ensures clarity and human-like intonation.</p></div>
+                    <form id="voice-gen-form" class="main-form full-width">
+                        <div class="voice-selector"><label for="voice-select">Choose a Voice:</label><select id="voice-select" name="voice"><option value="ko-KR-Neural2-B">Korean (Female)</option><option value="ko-KR-Neural2-C">Korean (Male)</option><option value="en-US-Studio-M">English, US (Male)</option><option value="en-US-Studio-O">English, US (Female)</option></select></div>
+                        <div class="prompt-wrapper"><textarea id="voice-gen-prompt" name="prompt" placeholder="Enter text for the voiceover..."></textarea></div>
+                        <button type="submit" class="btn btn-voice"><i class="material-icons">record_voice_over</i>Generate Voice</button>
+                    </form>
+                    <div id="voice-gen-loading" class="loading-container hidden"><div class="loader"></div></div>
+                    <div id="voice-gen-results" class="results-container hidden"><audio id="generated-voice" controls></audio></div>
+                </div>
+
+                <div id="campaign-sim-tab" class="tab-content">
+                    <div class="tech-overview"><p><strong>Integrated Workflow:</strong> This simulator combines multiple Google Cloud services into a seamless workflow. It uses <strong>Imagen 4</strong> for initial ad creative generation, followed by the <strong>Cloud Vision API</strong> for object detection and policy checks. Finally, <strong>Gemini</strong> provides a deeper, context-aware analysis of the creative's effectiveness and safety.</p></div>
+                    <div class="simulator-content-new">
+                        <div class="generation-section">
+                            <div class="generation-left">
+                                <h3>1. Generate & Refine</h3>
+                                <div class="prompt-wrapper">
+                                    <textarea id="campaign-prompt" placeholder="Describe the ad image..."></textarea>
+                                    <button type="button" class="btn-enhance" data-target="campaign-prompt" title="Enhance Prompt"><i class="material-icons">auto_awesome</i></button>
+                                </div>
+                                <button id="campaign-generate-btn" class="btn btn-generate"><i class="material-icons">campaign</i>Generate Ad Image</button>
+                            </div>
+                            <div class="generation-right">
+                                <div class="image-container" id="campaign-image-container"><canvas id="campaign-canvas"></canvas><p id="ad-image-placeholder">Your ad image will appear here.</p></div>
+                            </div>
+                        </div>
+                        <div class="analysis-section">
+                            <h3>2. Analyze Fitness</h3>
+                            <button id="analyze-btn" class="btn btn-analyze" disabled><i class="material-icons">analytics</i>Analyze Image</button>
+                            <div id="analysis-loading" class="loading-container hidden"><div class="loader"></div></div>
+                            <div id="analysis-results-grid" class="hidden">
+                                <div class="analysis-column">
+                                    <div class="analysis-box" id="annotated-image-container">
+                                        <h4>AI Object Detection</h4>
+                                        <img id="annotated-image" src="" alt="Annotated Image">
+                                    </div>
+                                 </div>
+                                <div class="analysis-column">
+                                    <div class="analysis-box single-box">
+                                        <div id="hsad-policy-box"></div>
+                                        <div id="analysis-results-content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="gemini-analysis-results" class="analysis-box hidden" style="margin-top: 1.5rem;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="finetune-sim-tab" class="tab-content">
+                    <div class="tech-overview"><p><strong>Fine-Tuning Simulation:</strong> This feature demonstrates the power of adapting models to specific brand identities. It uses the multimodal capabilities of <strong>Gemini</strong> to analyze a collection of brand images, extracting a unique "Style DNA." This DNA is then used to guide <strong>Imagen 4</strong>, ensuring that newly generated images adhere to the established brand aesthetic for perfect consistency.</p></div>
+                    <div class="simulator-content-grid">
+                        <div class="finetune-box">
+                            <h3>1. Upload Brand Style Images</h3>
+                            <label for="finetune-upload" class="btn btn-finetune-upload"><i class="material-icons">upload_file</i>Choose Files</label>
+                            <input type="file" id="finetune-upload" multiple accept="image/*">
+                            <div id="finetune-preview-gallery"></div>
+                        </div>
+                        <div class="finetune-box">
+                            <h3>2. Describe Your Product</h3>
+                            <div class="prompt-wrapper full-height">
+                                <textarea id="finetune-prompt-input" placeholder="e.g., 'A new brand of sparkling water'"></textarea>
+                            </div>
+                            <button id="finetune-generate-btn" class="btn btn-finetune-upload">✨ Generate with Fine-Tuned Style</button>
+                        </div>
+                        <div class="finetune-box">
+                            <h3>3. Result</h3>
+                            <div class="image-container" id="finetune-result-container">
+                                <div id="finetune-loading" class="loading-container hidden"><div class="loader"></div></div>
+                                <img id="finetune-image" class="hidden" src="">
+                                <p id="finetune-placeholder">Result will appear here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="why-gcp-tab" class="tab-content">
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>통합 워크플로우 vs. 단일 API</h3>
+                            <p>Google Cloud는 Imagen, Cloud Storage, Vision AI, 모델 파인튜닝까지 엔드투엔드 생태계를 제공하여 진정한 엔터프라이즈 AI 역량을 구축합니다. 각 서비스가 유기적으로 연동되어, 아이디어 구상부터 최종 광고 집행까지의 전체 과정을 하나의 플랫폼에서 효율적으로 관리할 수 있습니다.</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>파인튜닝의 힘: HSAD만의 독점 모델</h3>
+                            <p>HSAD만의 캠페인 자산, 브랜드 가이드라인을 학습시켜, 타사가 복제할 수 없는 경쟁 우위를 확보하고 브랜드 일관성을 유지하는 독점 모델을 만들 수 있습니다. 이는 단순한 스타일 적용을 넘어, 브랜드의 철학과 가치를 담아내는 AI를 구현하는 핵심 기술입니다.</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>엔터프라이즈급 보안 및 저작권 면책</h3>
+                            <p>HSAD의 데이터는 다른 고객의 모델 훈련에 절대 사용되지 않으며, 생성된 콘텐츠에 대한 저작권 분쟁 발생 시 Google Cloud가 법적으로 보호하고 책임을 부담합니다. 이는 기업이 안심하고 생성형 AI를 활용할 수 있는 가장 중요한 기반이 됩니다.</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>최첨단 멀티모달, Gemini</h3>
+                            <p>Gemini는 텍스트, 이미지, 비디오, 코드를 동시에 이해하고 처리하는 Google의 가장 진보된 AI 모델입니다. 광고 카피라이팅, 이미지 분석, 크리에이티브 기획 등 복합적인 태스크를 해결하며 HSAD의 크리에이티브 역량을 극대화합니다.</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>초고화질 영상 제작, Veo</h3>
+                            <p>Veo는 텍스트와 이미지로부터 1080p 이상의 고화질 영상을 생성하는 Google의 최신 영상 모델입니다. 복잡한 시네마틱 효과와 일관된 시각적 톤앤매너를 구현하여, 기존에 수일이 걸리던 영상 제작 과정을 몇 분 만에 완료할 수 있도록 돕습니다.</p>
+                        </div>
+                         <div class="info-card">
+                            <h3>Google 검색을 통한 최신 정보 활용</h3>
+                            <p>Google Cloud의 생성형 AI 모델은 실시간 Google 검색 결과를 활용하여, 세상의 최신 정보와 트렌드를 광고 콘텐츠에 즉시 반영할 수 있습니다. 이는 다른 어떤 AI 모델도 제공할 수 없는 독보적인 기능으로, 광고의 시의성과 설득력을 크게 향상시킵니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <footer style="text-align: center; padding: 20px; font-family: 'Poppins', sans-serif; color: #ccc; font-size: 14px;">
+        Developed by dulee@
+    </footer>
+</body>
+</html>

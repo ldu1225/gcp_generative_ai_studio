@@ -1,0 +1,10 @@
+Flask
+google-cloud-aiplatform
+google-cloud-storage
+google-cloud-vision
+google-cloud-texttospeech
+Pillow
+python-dotenv
+gunicorn
+matplotlib
+google-generativeai

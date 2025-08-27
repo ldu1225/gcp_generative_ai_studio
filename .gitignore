@@ -1,0 +1,15 @@
+# Environments
+.env
+.venv
+venv/
+__pycache__/
+
+# Log files
+*.log
+
+# Archives
+*.zip
+
+# Other
+.DS_Store
+*.bak
