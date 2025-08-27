@@ -10,14 +10,14 @@
 
 ## 2. 주요 기능 (Key Features)
 
-- **나노바나나 에디터 (Nano-banana Editor)**: 사용자가 원하는 부분을 섬세하게 편집할 수 있는 새로운 기능입니다.
-- **이미지 편집 (Image Editing)**: 프롬프트를 기반으로 이미지를 수정합니다.
-- **이미지 생성 (Image Generation)**: 텍스트 설명으로부터 새로운 이미지를 생성합니다.
+- **나노바나나 에디터 (Nano-banana Editor)**: 여러 이미지와 텍스트 프롬프트를 동시에 입력받아, 이미지의 특정 부분을 섬세하게 편집하거나 합성하는 고급 편집 기능입니다. Google AI Studio의 `gemini-2.5-flash-image` 모델을 활용합니다.
+- **이미지 편집 (Image Editing)**: 단일 이미지와 프롬프트를 기반으로 이미지를 수정합니다. (Imagen 3)
+- **이미지 생성 (Image Generation)**: 텍스트 설명으로부터 새로운 이미지를 생성합니다. (Imagen 4)
 - **이미지 업스케일링 (Image Upscaling)**: 이미지 해상도를 4배 향상시킵니다.
-- **비디오 생성 (Video Generation)**: 이미지와 프롬프트를 사용해 짧은 비디오를 제작합니다.
-- **음악 생성 (Music Generation)**: 분위기나 장르에 맞는 배경 음악을 생성합니다.
-- **음성 생성 (Voice Generation)**: 텍스트를 자연스러운 음성으로 변환합니다.
-- **광고 적합성 분석 (Ad Suitability Analysis)**: 생성된 이미지가 광고에 적합한지 자동으로 분석합니다.
+- **비디오 생성 (Video Generation)**: 이미지와 프롬프트를 사용해 짧은 비디오를 제작합니다. (Veo)
+- **음악 생성 (Music Generation)**: 분위기나 장르에 맞는 배경 음악을 생성합니다. (Lyria)
+- **음성 생성 (Voice Generation)**: 텍스트를 자연스러운 음성으로 변환합니다. (Google TTS)
+- **광고 적합성 분석 (Ad Suitability Analysis)**: 생성된 이미지가 광고에 적합한지 자동으로 분석합니다. (Vision API + Gemini)
 - **파인튜닝 시뮬레이션 (Finetuning Simulation)**: 특정 스타일을 학습한 것처럼 일관된 톤의 이미지를 생성합니다.
 
 ---
@@ -28,20 +28,7 @@
 
 ```
 /
-├── real_final/               # 최신 애플리케이션 소스 코드
-│   ├── backend/              # 백엔드 (Python, Flask)
-│   │   ├── main.py           # 핵심 API 로직
-│   │   └── requirements.txt  # Python 의존성 목록
-│   ├── frontend/             # 프론트엔드 (HTML, CSS, JS)
-│   │   ├── index.html        # 메인 UI 구조
-│   │   ├── style.css         # UI 스타일
-│   │   └── app.js            # 클라이언트 로직
-│   └── Dockerfile            # 컨테이너 배포 설정
-├── venv/                     # Python 가상 환경
-└── ... (기타 이전 버전 디렉토리)
-```
-
-- **`real_final/backend/`**: Flask 기반의 백엔드 서버로, Google Cloud AI 서비스와 연동하여 실제 생성 및 분석 작업을 처리하는 API를 제공합니다.
+├── real_final/               # 최신 애플리- **`real_final/backend/`**: Flask 기반의 백엔드 서버로, Google Cloud AI 서비스와 연동하여 실제 생성 및 분석 작업을 처리하는 API를 제공합니다.
 - **`real_final/frontend/`**: 사용자가 상호작용하는 웹 인터페이스로, 순수 HTML/CSS/JavaScript로 구성된 싱글 페이지 애플리케이션(SPA)입니다.
 - **`real_final/Dockerfile`**: 애플리케이션을 컨테이너화하여 Google Cloud Run과 같은 환경에 쉽게 배포할 수 있도록 정의한 파일입니다.
 - **`venv/`**: 로컬 개발을 위한 Python 패키지들이 격리되어 설치된 가상 환경입니다.
@@ -55,9 +42,10 @@
 #### `main.py`
 - **역할**: Flask 웹 프레임워크를 사용하여 모든 백엔드 API 엔드포인트를 정의하고 비즈니스 로직을 처리하는 핵심 파일입니다.
 - **주요 기능**:
-    - **Flask 앱 초기화**: 프론트엔드 파일을 템플릿으로 사용하는 Flask 앱을 설정합니다.
-    - **Google Cloud 클라이언트 초기화**: Vertex AI, Cloud Storage, Vision API 등 필요한 모든 Google Cloud 서비스 클라이언트를 전역으로 초기화합니다.
+    - **Flask 앱 초기화 및 환경 변수 로드**: `.env` 파일의 설정을 불러와 Flask 앱을 설정합니다.
+    - **Google Cloud 클라이언트 초기화**: Vertex AI 클라이언트와 Google AI Studio 클라이언트를 각각 초기화합니다.
     - **API 엔드포인트 정의**:
+        - `/api/edit_nanobanana`: **(나노바나나 에디터)** 여러 이미지와 프롬프트를 받아 `gemini-2.5-flash-image` 모델로 이미지를 편집/합성합니다. Google AI Studio API 키를 사용합니다.
         - `/api/edit`: 이미지와 프롬프트를 받아 Imagen 3 모델로 이미지를 편집합니다. Gemini가 편집 계획을 수립하는 데 사용됩니다.
         - `/api/generate_image`: 프롬프트를 받아 Imagen 4 모델로 이미지를 생성합니다.
         - `/api/upscale_image`: 이미지를 받아 4배 업스케일링합니다.
@@ -72,12 +60,13 @@
 - **역할**: 백엔드 서버 실행에 필요한 Python 라이브러리 목록을 정의합니다.
 - **주요 라이브러리**:
     - `Flask`: 웹 프레임워크
+    - `python-dotenv`: `.env` 파일 관리
     - `google-cloud-aiplatform`: Vertex AI (Gemini, Imagen, Veo) 접근
     - `google-cloud-storage`: 파일 스토리지
     - `google-cloud-vision`: 이미지 분석
     - `google-cloud-texttospeech`: 텍스트 음성 변환
+    - `google-generativeai`: Google AI Studio (나노바나나 모델) 접근
     - `Pillow`: 이미지 처리
-    - `google-generativeai`: Google 생성형 AI SDK
 
 ### 4.2. 프론트엔드 (Frontend - `real_final/frontend/`)
 
