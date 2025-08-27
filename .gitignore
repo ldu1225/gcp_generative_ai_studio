@@ -10,6 +10,11 @@ __pycache__/
 # Archives
 *.zip
 
+# Backup Folders
+cloud_run_source/
+final2/
+real_final/
+
 # Other
 .DS_Store
 *.bak
